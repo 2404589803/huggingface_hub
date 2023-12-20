@@ -8,6 +8,8 @@
       title: 安装
 - title: "guides" 
   sections:
+    - local: guides/hf_file_system
+      title: Hf文件系统
     - local: guides/repository
       title: 储存库
 - title: "concepts" 
