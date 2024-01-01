@@ -66,11 +66,9 @@ DiscussionWithDetails(
 对于拉取请求，你可以使用 [`DiscussionWithDetails.diff`] 检索原始的 git 差异。拉取请求的所有提交都列在 [`DiscussionWithDetails.events`] 中。
 
 
-## Create and edit a Discussion or Pull Request programmatically
+## 以编程方式创建和编辑讨论或拉取请求
 
-The [`HfApi`] class also offers ways to create and edit Discussions and Pull Requests.
-You will need an [access token](https://huggingface.co/docs/hub/security-tokens) to create and edit Discussions
-or Pull Requests.
+[`HfApi`] 类还提供了创建和编辑讨论或拉取请求的方法。您需要一个[访问令牌](https://huggingface.co/docs/hub/security-tokens)来创建和编辑讨论或拉取请求。
 
 The simplest way to propose changes on a repo on the Hub is via the [`create_commit`] API: just 
 set the `create_pr` parameter to `True`. This parameter is also available on other methods that wrap [`create_commit`]:
