@@ -12,6 +12,8 @@
       title: Hf文件系统
     - local: guides/repository
       title: 储存库
+    - local: guides/community
+      title: 社区选项卡
 - title: "concepts" 
   sections:
     - local: concepts/git_vs_http
