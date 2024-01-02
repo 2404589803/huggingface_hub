@@ -70,14 +70,15 @@ DiscussionWithDetails(
 
 [`HfApi`] 类还提供了创建和编辑讨论或拉取请求的方法。您需要一个[访问令牌](https://huggingface.co/docs/hub/security-tokens)来创建和编辑讨论或拉取请求。
 
-The simplest way to propose changes on a repo on the Hub is via the [`create_commit`] API: just 
-set the `create_pr` parameter to `True`. This parameter is also available on other methods that wrap [`create_commit`]:
+通过[`create_commit`] API向Hub提出更改建议的最简单方法是：只需将`create_pr`参数设置为`True`。此参数还适用于其他封装了[`create_commit`]的方法：
 
-    * [`upload_file`]
-    * [`upload_folder`]
-    * [`delete_file`]
-    * [`delete_folder`]
-    * [`metadata_update`]
+- [`upload_file`]
+- [`upload_folder`]
+- [`delete_file`]
+- [`delete_folder`]
+- [`metadata_update`]
+
+请运行以下代码：
 
 ```python
 >>> from huggingface_hub import metadata_update
@@ -89,8 +90,10 @@ set the `create_pr` parameter to `True`. This parameter is also available on oth
 ... )
 ```
 
-You can also use [`HfApi.create_discussion`] (respectively [`HfApi.create_pull_request`]) to create a Discussion (respectively a Pull Request) on a repo.
-Opening a Pull Request this way can be useful if you need to work on changes locally. Pull Requests opened this way will be in `"draft"` mode.
+您还可以使用 [HfApi.create_discussion]（或 [HfApi.create_pull_request]）在仓库上创建讨论（或拉取请求）。
+以这种方式打开拉取请求可能在您需要在本地进行更改时很有用。以这种方式打开的拉取请求将处于“draft（草稿）”模式。
+
+请运行以下代码：
 
 ```python
 >>> from huggingface_hub import create_discussion, create_pull_request
@@ -110,21 +113,21 @@ DiscussionWithDetails(...)
 DiscussionWithDetails(..., is_pull_request=True)
 ```
 
-Managing Pull Requests and Discussions can be done entirely with the [`HfApi`] class. For example:
+使用 [`HfApi`] 类完全可以进行拉取请求和讨论的管理。例如：
 
-    * [`comment_discussion`] to add comments
-    * [`edit_discussion_comment`] to edit comments
-    * [`rename_discussion`] to rename a Discussion or Pull Request 
-    * [`change_discussion_status`] to open or close a Discussion / Pull Request 
-    * [`merge_pull_request`] to merge a Pull Request 
+* [`comment_discussion`] 用于添加评论
+* [`edit_discussion_comment`] 用于编辑评论
+* [`rename_discussion`] 用于重命名讨论或拉取请求
+* [`change_discussion_status`] 用于打开或关闭讨论/拉取请求
+* [`merge_pull_request`] 用于合并拉取请求
 
 
-Visit the [`HfApi`] documentation page for an exhaustive reference of all available methods.
+访问[`HfApi`]文档页面，查看所有可用方法的详尽参考。
 
-## Push changes to a Pull Request
+## 推送更改到拉取请求
 
-*Coming soon !*
+*即将推出！*
 
-## See also
+## 浏览更多内容
 
-For a more detailed reference, visit the [Discussions and Pull Requests](../package_reference/community) and the [hf_api](../package_reference/hf_api) documentation page.
+为了获得更详细的参考资料，请访问[讨论和拉取请求](../package_reference/community)以及 [hf_api](../package_reference/hf_api) 文档页面。
