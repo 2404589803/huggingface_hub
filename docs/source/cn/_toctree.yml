@@ -8,6 +8,10 @@
       title: 安装
 - title: "guides" 
   sections:
+    - local: guides/overview
+      title: 总览
+    - local: guides/download
+      title: 下载文件
     - local: guides/hf_file_system
       title: Hf文件系统
     - local: guides/repository
