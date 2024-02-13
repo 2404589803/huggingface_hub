@@ -4,7 +4,7 @@ rendered properly in your Markdown viewer.
 
 # 从Hub下载文件
 
-`huggingface_hub` 库提供了从存储在 Hub 上的仓库中下载文件的功能。您可以独立使用这些功能，也可以将其集成到自己的库中，使用户更方便地与 Hub 进行交互。本指南将向您展示如何："
+`huggingface_hub` 库提供了从存储在 Hub 上的仓库中下载文件的功能。您可以独立使用这些功能，也可以将其集成到自己的库中，使用户更方便地与 Hub 进行交互。本指南将向您展示如何：
 
 * 下载并缓存单个文件
 * 下载并缓存整个存储库
@@ -38,7 +38,7 @@ rendered properly in your Markdown viewer.
 
 ### 从特定版本
 
-默认情况下，将下载`main`分支上的最新版本。但是，在某些情况下，您可能希望下载特定版本的文件（例如，从特定分支、PR、标签或提交哈希）。要实现这一点，请使用`revision`参数：
+默认情况下，将下载 `main`分支上的最新版本。但是，在某些情况下，您可能希望下载特定版本的文件（例如，从特定分支、PR、标签或提交哈希）。要实现这一点，请使用 `revision`参数：
 
 请运行以下代码：
 
@@ -66,7 +66,7 @@ rendered properly in your Markdown viewer.
 
 [`snapshot_download`] 在给定的修订版本中下载整个仓库。它在内部使用 [`hf_hub_download`]，这意味着所有下载的文件也会被缓存在您的本地磁盘上。下载是多线程进行的，以加快进程。
 
-要下载整个仓库，只需传递`repo_id`和`repo_type`参数：
+要下载整个仓库，只需传递 `repo_id`和 `repo_type`参数：
 
 运行代码如下：
 
@@ -80,7 +80,7 @@ rendered properly in your Markdown viewer.
 '/home/lysandre/.cache/huggingface/hub/datasets--google--fleurs/snapshots/199e4ae37915137c555b1765c01477c216287d34'
 ```
 
-[`snapshot_download`] 默认下载最新修订版本。如果您想要特定的仓库修订版本，请使用`revision`参数：
+[`snapshot_download`] 默认下载最新修订版本。如果您想要特定的仓库修订版本，请使用 `revision`参数：
 
 运行代码如下：
 
@@ -89,89 +89,80 @@ rendered properly in your Markdown viewer.
 >>> snapshot_download(repo_id="lysandre/arxiv-nlp", revision="refs/pr/1")
 ```
 
-### Filter files to download
+### 筛选要下载的文件
 
-[`snapshot_download`] provides an easy way to download a repository. However, you don't always want to download the
-entire content of a repository. For example, you might want to prevent downloading all `.bin` files if you know you'll
-only use the `.safetensors` weights. You can do that using `allow_patterns` and `ignore_patterns` parameters.
+[`snapshot_download`] 提供了一个简便的方法来下载一个仓库。然而，我们并不总是希望下载整个仓库的内容。例如，如果只需要使用 `.safetensors` 权重文件，你可能希望阻止下载所有的 `.bin` 文件。你可以使用 `allow_patterns` 和 `ignore_patterns` 这两个参数来实现这个目的。
 
-These parameters accept either a single pattern or a list of patterns. Patterns are Standard Wildcards (globbing
-patterns) as documented [here](https://tldp.org/LDP/GNU-Linux-Tools-Summary/html/x11655.htm). The pattern matching is
-based on [`fnmatch`](https://docs.python.org/3/library/fnmatch.html).
+这些参数接受单个模式或模式列表。这些模式是标准通配符（globbing patterns），在[这里](https://tldp.org/LDP/GNU-Linux-Tools-Summary/html/x11655.htm)有文档说明。模式匹配基于 [`fnmatch`](https://docs.python.org/3/library/fnmatch.html)。
 
-For example, you can use `allow_patterns` to only download JSON configuration files:
+例如，你可以使用 `allow_patterns` 来只下载 JSON 配置文件：
+
+运行代码如下：
 
 ```python
 >>> from huggingface_hub import snapshot_download
 >>> snapshot_download(repo_id="lysandre/arxiv-nlp", allow_patterns="*.json")
 ```
 
-On the other hand, `ignore_patterns` can exclude certain files from being downloaded. The
-following example ignores the `.msgpack` and `.h5` file extensions:
+另一方面，`ignore_patterns` 可以排除某些文件不被下载。下面的示例忽略了 `.msgpack` 和 `.h5` 文件扩展名：
 
 ```python
 >>> from huggingface_hub import snapshot_download
 >>> snapshot_download(repo_id="lysandre/arxiv-nlp", ignore_patterns=["*.msgpack", "*.h5"])
 ```
 
-Finally, you can combine both to precisely filter your download. Here is an example to download all json and markdown
-files except `vocab.json`.
+最后，您可以结合两者精确过滤您的下载。以下是一个示例，用于下载所有 json 和 markdown 文件，除了 `vocab.json`。
+
+代码如下：
 
 ```python
 >>> from huggingface_hub import snapshot_download
 >>> snapshot_download(repo_id="gpt2", allow_patterns=["*.md", "*.json"], ignore_patterns="vocab.json")
 ```
 
-## Download file(s) to local folder
+## 将文件下载到本地文件夹
 
-The recommended (and default) way to download files from the Hub is to use the [cache-system](./manage-cache).
-You can define your cache location by setting `cache_dir` parameter (both in [`hf_hub_download`] and [`snapshot_download`]).
+从Hub下载文件的推荐方式（也是默认方式）是使用[缓存系统](./manage-cache)。
+您可以通过设置 `cache_dir` 参数（在 [`hf_hub_download`] 和 [`snapshot_download`] 中均可）来定义缓存位置。
 
-However, in some cases you want to download files and move them to a specific folder. This is useful to get a workflow
-closer to what `git` commands offer. You can do that using the `local_dir` and `local_dir_use_symlinks` parameters:
-- `local_dir` must be a path to a folder on your system. The downloaded files will keep the same file structure as in the
-repo. For example if `filename="data/train.csv"` and `local_dir="path/to/folder"`, then the returned filepath will be
-`"path/to/folder/data/train.csv"`.
-- `local_dir_use_symlinks` defines how the file must be saved in your local folder.
-  - The default behavior (`"auto"`) is to duplicate small files (<5MB) and use symlinks for bigger files. Symlinks allow
-    to optimize both bandwidth and disk usage. However manually editing a symlinked file might corrupt the cache, hence
-    the duplication for small files. The 5MB threshold can be configured with the `HF_HUB_LOCAL_DIR_AUTO_SYMLINK_THRESHOLD`
-    environment variable.
-  - If `local_dir_use_symlinks=True` is set, all files are symlinked for an optimal disk space optimization. This is
-    for example useful when downloading a huge dataset with thousands of small files.
-  - Finally, if you don't want symlinks at all you can disable them (`local_dir_use_symlinks=False`). The cache directory
-    will still be used to check wether the file is already cached or not. If already cached, the file is **duplicated**
-    from the cache (i.e. saves bandwidth but increases disk usage). If the file is not already cached, it will be
-    downloaded and moved directly to the local dir. This means that if you need to reuse it somewhere else later, it
-    will be **re-downloaded**.
+然而，在某些情况下，您希望下载文件并将它们移动到特定的文件夹中。这对于建立工作流程很有用。
+您可以使用 `local_dir` 和 `local_dir_use_symlinks` 参数来实现这一点，使其更接近 `git` 命令提供的功能:
 
-Here is a table that summarizes the different options to help you choose the parameters that best suit your use case.
+- `local_dir` 必须是系统上文件夹的路径。下载的文件将保持与存储库中相同的文件结构。例如，如果 `filename="data/train.csv"`，`local_dir="path/to/folder"`，那么返回的文件路径将是 `"path/to/folder/data/train.csv"`。
+- `local_dir_use_symlinks` 定义了文件在本地文件夹中的保存方式。
+  - 默认行为（`"auto"`）是对小文件（<5MB）进行复制，并对大文件使用符号链接。符号链接可以优化带宽和磁盘使用。但手动编辑符号链接的文件可能会损坏缓存，因此对于小文件进行复制。5MB 阈值可以通过环境变量 `HF_HUB_LOCAL_DIR_AUTO_SYMLINK_THRESHOLD` 进行配置。
+  - 如果设置 `local_dir_use_symlinks=True`，则所有文件都将使用符号链接进行磁盘空间优化。例如，在下载包含数千个小文件的大型数据集时非常有用。
+  - 最后，如果您完全不想使用符号链接，可以禁用它们（`local_dir_use_symlinks=False`）。仍然将使用缓存目录来检查文件是否已经缓存。如果已经缓存，文件将从缓存中**复制**（即节省带宽但增加磁盘使用量）。如果文件尚未缓存，它将直接下载并移动到本地目录。这意味着如果以后需要在其他地方重用它，它将被**重新下载**。
+
+以下是一个总结不同选项的表格，以帮助您选择最适合您用例的参数。
 
 <!-- Generated with https://www.tablesgenerator.com/markdown_tables -->
-| Parameters | File already cached | Returned path | Can read path? | Can save to path? | Optimized bandwidth | Optimized disk usage |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| `local_dir=None` |  | symlink in cache | ✅ | ❌<br>_(save would corrupt the cache)_ | ✅ | ✅ |
-| `local_dir="path/to/folder"`<br>`local_dir_use_symlinks="auto"` |  | file or symlink in folder | ✅ | ✅ _(for small files)_ <br> ⚠️ _(for big files do not resolve path before saving)_ | ✅ | ✅ |
-| `local_dir="path/to/folder"`<br>`local_dir_use_symlinks=True` |  | symlink in folder | ✅ | ⚠️<br>_(do not resolve path before saving)_ | ✅ | ✅ |
-| `local_dir="path/to/folder"`<br>`local_dir_use_symlinks=False` | No | file in folder | ✅ | ✅ | ❌<br>_(if re-run, file is re-downloaded)_ | ⚠️<br>(multiple copies if ran in multiple folders) |
-| `local_dir="path/to/folder"`<br>`local_dir_use_symlinks=False` | Yes | file in folder | ✅ | ✅ | ⚠️<br>_(file has to be cached first)_ | ❌<br>_(file is duplicated)_ |
 
-**Note:** if you are on a Windows machine, you need to enable developer mode or run `huggingface_hub` as admin to enable
-symlinks. Check out the [cache limitations](../guides/manage-cache#limitations) section for more details.
+| Parameters                                                          | File already cached |       Returned path       | Can read path? |                                      Can save to path?                                      |               Optimized bandwidth               |                   Optimized disk usage                   |
+| ------------------------------------------------------------------- | :-----------------: | :-----------------------: | :------------: | :-----------------------------------------------------------------------------------------: | :----------------------------------------------: | :------------------------------------------------------: |
+| `local_dir=None`                                                  |                    |     symlink in cache     |       ✅       |                        ❌`<br>`_(save would corrupt the cache)_                        |                        ✅                        |                            ✅                            |
+| `local_dir="path/to/folder"<br>``local_dir_use_symlinks="auto"` |                    | file or symlink in folder |       ✅       | ✅_(for small files)_ `<br>` ⚠️ _(for big files do not resolve path before saving)_ |                        ✅                        |                            ✅                            |
+| `local_dir="path/to/folder"<br>``local_dir_use_symlinks=True`   |                    |     symlink in folder     |       ✅       |                     ⚠️`<br>`_(do not resolve path before saving)_                     |                        ✅                        |                            ✅                            |
+| `local_dir="path/to/folder"<br>``local_dir_use_symlinks=False`  |         No         |      file in folder      |       ✅       |                                             ✅                                             | ❌`<br>`_(if re-run, file is re-downloaded)_ | ⚠️`<br>`(multiple copies if ran in multiple folders) |
+| `local_dir="path/to/folder"<br>``local_dir_use_symlinks=False`  |         Yes         |      file in folder      |       ✅       |                                             ✅                                             |  ⚠️`<br>`_(file has to be cached first)_  |            ❌`<br>`_(file is duplicated)_            |
 
-## Download from the CLI
+**注意** 如果您正在使用 Windows 机器，您需要启用开发者模式或以管理员身份运行 `huggingface_hub` 以启用符号链接。更多详细信息，请查看 [缓存限制](../guides/manage-cache#limitations) 部分。
 
-You can use the `huggingface-cli download` command from the terminal to directly download files from the Hub.
-Internally, it uses the same [`hf_hub_download`] and [`snapshot_download`] helpers described above and prints the
-returned path to the terminal.
+## 从命令行界面下载
+
+您可以使用终端中的 `huggingface-cli download` 命令直接从 Hub 下载文件。
+在内部，它使用了上述描述的相同 [hf_hub_download] 和 [snapshot_download] 辅助工具，并将返回的路径打印到终端上。
+
+代码如下：
 
 ```bash
 >>> huggingface-cli download gpt2 config.json
 /home/wauplin/.cache/huggingface/hub/models--gpt2/snapshots/11c5a3d5811f50298f278a704980280950aedb10/config.json
 ```
 
-You can download multiple files at once which displays a progress bar and returns the snapshot path in which the files
-are located:
+您可以一次下载多个文件，显示进度条，并返回文件所在的快照路径：
+
+代码如下：
 
 ```bash
 >>> huggingface-cli download gpt2 config.json model.safetensors
@@ -179,20 +170,20 @@ Fetching 2 files: 100%|███████████████████
 /home/wauplin/.cache/huggingface/hub/models--gpt2/snapshots/11c5a3d5811f50298f278a704980280950aedb10
 ```
 
-For more details about the CLI download command, please refer to the [CLI guide](./cli#huggingface-cli-download).
+有关 CLI 下载命令的更多详细信息，请参阅 [CLI 指南](./cli#huggingface-cli-download)。
 
-## Faster downloads
+## 更快的下载
 
-If you are running on a machine with high bandwidth, you can increase your download speed with [`hf_transfer`](https://github.com/huggingface/hf_transfer), a Rust-based library developed to speed up file transfers with the Hub. To enable it, install the package (`pip install hf_transfer`) and set `HF_HUB_ENABLE_HF_TRANSFER=1` as an environment variable.
+如果您在带宽较高的计算机上运行，您可以通过 [`hf_transfer`](https://github.com/huggingface/hf_transfer) 来提高下载速度，这是一个基于 Rust 开发的库，专门用于加速与 Hub 的文件传输。要启用它，请安装该软件包（`pip install hf_transfer`）并将 `HF_HUB_ENABLE_HF_TRANSFER=1` 设置为环境变量。
 
 <Tip>
 
-Progress bars are supported in `hf_transfer` starting from version `0.1.4`. Consider upgrading (`pip install -U hf-transfer`) if you plan to enable faster downloads.
+从版本 `0.1.4` 开始，`hf_transfer` 支持进度条显示。如果您计划启用更快的下载，请考虑升级（`pip install -U hf-transfer`）。
 
 </Tip>
 
 <Tip warning={true}>
 
-`hf_transfer` is a power user tool! It is tested and production-ready, but it lacks user-friendly features like advanced error handling or proxies. For more details, please take a look at this [section](https://huggingface.co/docs/huggingface_hub/hf_transfer).
+`hf_transfer` 是一款高级用户工具！它经过测试并准备投入生产，但缺少用户友好的功能，如高级错误处理或代理设置。有关更多详细信息，请查看这个[部分](https://huggingface.co/docs/huggingface_hub/hf_transfer)。
 
 </Tip>
